@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../data/onboarding_data.dart';
 import '../utils/deisgn_system.dart';
 import '../widgets/onboarding_content_widgets.dart';
+import 'dashboard.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -101,14 +102,9 @@ class OnboardingPageState extends State<OnboardingPage> {
                       ),
                     ),
                     onPressed: () {
-                      if (_currentIndex == onboardingContents.length - 1) {
-                        // Navigate to the next screen or perform some action
-                      } else {
-                        _pageController.nextPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.ease,
-                        );
-                      }
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (_) => const Dashboard(),
+                      ));
                     },
                     child: const Text(
                       'Get Started',
