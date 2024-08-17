@@ -15,10 +15,22 @@ class HomePageState extends State<HomePage> {
   int _activeTabIndex = 0;
   bool _isTabLoading = false;
 
-  final List<String> _carouselImages = [
-    'assets/card/card1.png',
-    'assets/card/card2.png',
-    'assets/card/card3.png',
+  final List<Map<String, dynamic>> _carouselData = [
+    {
+      'imagePath': 'assets/card/card1.png',
+      'backgroundColor': const Color(0xFF3E1676),
+      'balance': '\$150.00 USD',
+    },
+    {
+      'imagePath': 'assets/card/card2.png',
+      'backgroundColor': const Color(0xFF16763E),
+      'balance': '\$200.00 USD',
+    },
+    {
+      'imagePath': 'assets/card/card3.png',
+      'backgroundColor': const Color(0xFF76163E),
+      'balance': '\$250.00 USD',
+    },
   ];
 
   @override
@@ -57,148 +69,243 @@ class HomePageState extends State<HomePage> {
     });
   }
 
+  void _openTopUpPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const TopUpPage()),
+    );
+  }
+
+  void _openCardDetailsPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const CardDetailsPage()),
+    );
+  }
+
+  void _openFreezeModalSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return const FreezeModalSheet();
+      },
+    );
+  }
+
+  void _openTerminateCardModalSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return const TerminateCardModalSheet();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            CarouselSlider(
-              items: _carouselImages.map((imagePath) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(top: 16),
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          height: 120,
-                          padding: const EdgeInsets.all(16.0),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF3E1676), // Updated color
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: WatWalletDesignSystem.primaryColor
-                                    .withOpacity(0.1),
-                                blurRadius: 10,
-                              ),
-                            ],
-                          ),
-                          child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 8.0),
-                                child: Text(
-                                  'Available Balance',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                CarouselSlider(
+                  items: _carouselData.map((data) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return Stack(
+                          alignment: Alignment.topCenter,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(top: 16),
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              height: 120,
+                              padding: const EdgeInsets.all(16.0),
+                              decoration: BoxDecoration(
+                                color: data['backgroundColor'],
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: WatWalletDesignSystem.primaryColor
+                                        .withOpacity(0.1),
+                                    blurRadius: 10,
                                   ),
-                                ),
+                                ],
                               ),
-                              Text(
-                                '\$150.00 USD',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(bottom: 8.0),
+                                    child: Text(
+                                      'Available Balance',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    data['balance'],
+                                    style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          top: 50, // Adjusted to 70 for better positioning
-                          left: 0,
-                          right: 0,
-                          child: Image.asset(
-                            imagePath,
-                            height:
-                                300, // Increase the height to ensure the full image is visible
-                            fit: BoxFit
-                                .contain, // Ensure the image fits within its bounds
-                          ),
-                        ),
-                      ],
+                            ),
+                            Positioned(
+                              top: 50,
+                              left: 0,
+                              right: 0,
+                              child: Image.asset(
+                                data['imagePath'],
+                                height: 300,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     );
-                  },
-                );
-              }).toList(),
-              options: CarouselOptions(
-                height: 300, // Adjusted height to accommodate the full image
-                enlargeCenterPage:
-                    false, // Ensure only the center item is shown
-                viewportFraction: 1.0, // Show only one item at a time
-                autoPlay: false,
-                onPageChanged: (index, reason) {
-                  _onCarouselChanged(index);
-                },
+                  }).toList(),
+                  options: CarouselOptions(
+                    height: 300,
+                    enlargeCenterPage: false,
+                    viewportFraction: 1.0,
+                    autoPlay: false,
+                    onPageChanged: (index, reason) {
+                      _onCarouselChanged(index);
+                    },
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: _carouselData.map((url) {
+                    int index = _carouselData.indexOf(url);
+                    return Container(
+                      width: 8.0,
+                      height: 4.0,
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 2.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: _currentIndex == index
+                            ? WatWalletDesignSystem.primaryColor
+                            : Colors.grey,
+                      ),
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: _openTopUpPage,
+                          child: _buildFeatureCard(Icons.add, 'Top Up'),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: _openCardDetailsPage,
+                          child: _buildFeatureCard(
+                              Icons.credit_card, 'Card Details'),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: _openFreezeModalSheet,
+                          child: _buildFeatureCard(Icons.lock, 'Freeze'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _buildBottomModalSheet(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomModalSheet() {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.4,
+      minChildSize: 0.4,
+      maxChildSize: 0.75,
+      builder: (BuildContext context, ScrollController scrollController) {
+        return Container(
+          padding: const EdgeInsets.only(top: 4, left: 16, right: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: _carouselImages.map((url) {
-                int index = _carouselImages.indexOf(url);
-                return Container(
-                  width: 8.0,
-                  height: 4.0,
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 2.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color: _currentIndex == index
-                        ? WatWalletDesignSystem.primaryColor
-                        : Colors.grey,
-                  ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _buildFeatureCard(Icons.add, 'Top Up'),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _buildFeatureCard(Icons.credit_card, 'Card Details'),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _buildFeatureCard(Icons.lock, 'Freeze'),
-                  ),
-                ],
+            ],
+          ),
+          child: Column(
+            children: [
+              const SizedBox(height: 8),
+              Container(
+                width: 50,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  Row(
+              const SizedBox(height: 16),
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.black.withOpacity(0.1),
+                    )),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
                     children: [
                       _buildTab('Transactions', index: 0),
                       _buildTab('Manage Card', index: 1),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  _isTabLoading
-                      ? _buildShimmerForTabContent()
-                      : _activeTabIndex == 0
-                          ? _buildTransactionsList()
-                          : _buildManageCardContent(),
-                ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  child: Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: _isTabLoading
+                        ? _buildShimmerForTabContent()
+                        : _activeTabIndex == 0
+                            ? _buildTransactionsList()
+                            : _buildManageCardContent(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -245,9 +352,9 @@ class HomePageState extends State<HomePage> {
           Text(
             label,
             style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+                color: WatWalletDesignSystem.primaryColor),
           ),
         ],
       ),
@@ -255,50 +362,356 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget _buildTransactionsList() {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: 5,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: Icon(Icons.shopping_cart_outlined,
-              color: WatWalletDesignSystem.primaryColor),
-          title: Text('Transaction Type $index'),
-          trailing: const Text('\$12.45'),
-        );
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          child: Text(
+            'Today',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        _buildTransactionItem('Grocery Shopping', '11:00 AM', '-\$50.00',
+            'assets/history/walmart.png', Colors.red),
+        _buildTransactionItem('Online Subscription', '1:00 PM', '-\$10.00',
+            'assets/history/netflix.png', Colors.red),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          child: Text(
+            'Yesterday',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        _buildTransactionItem('Dining Out', '7:00 PM', '-\$30.00',
+            'assets/history/noon.png', Colors.red),
+        _buildTransactionItem('Fuel', '9:00 PM', '-\$40.00',
+            'assets/history/google.png', Colors.red),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          child: Text(
+            'This Week',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        _buildTransactionItem('Gym Membership', '11:00 AM', '-\$25.00',
+            'assets/history/walmart.png', Colors.red),
+        _buildTransactionItem('Incoming Transfer', '2:00 PM', '+\$100.00',
+            'assets/history/google.png', Colors.green),
+      ],
+    );
+  }
+
+  Widget _buildTransactionItem(String title, String time, String price,
+      String imagePath, Color badgeColor) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Container(
+        height: 72,
+        child: Row(
+          children: [
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                image: DecorationImage(
+                  image: AssetImage(imagePath),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    time,
+                    style: const TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+              decoration: BoxDecoration(
+                color: badgeColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                price,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildManageCardContent() {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          // Handle delete card
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: WatWalletDesignSystem.primaryColor,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: () {
+            // Handle Add to Apple Wallet
+          },
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            margin: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.apple, color: Colors.white),
+                const Spacer(),
+                const Text(
+                  'Add to Apple Wallet',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Spacer(),
+              ],
+            ),
+          ),
         ),
-        child: const Text('Delete Card'),
+        _buildManageCardItem('Spending Currencies'),
+        _buildManageCardItem('Spending Limit'),
+        _buildManageCardItem('Change PIN'),
+        _buildManageCardItem('Order History'),
+        GestureDetector(
+          onTap: _openTerminateCardModalSheet,
+          child: _buildManageCardItem('Terminate Card'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildManageCardItem(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
       ),
     );
   }
 
   Widget _buildShimmerForTabContent() {
     return Shimmer.fromColors(
-      baseColor: WatWalletDesignSystem.primaryColor.withOpacity(0.3),
-      highlightColor: WatWalletDesignSystem.primaryColor.withOpacity(0.1),
+      baseColor: WatWalletDesignSystem.shimmerColor,
+      highlightColor: WatWalletDesignSystem.primaryColor.withOpacity(0.05),
       child: Column(
         children: [
           Container(
             height: 100,
             margin: const EdgeInsets.symmetric(vertical: 8.0),
-            color: Colors.white,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
           Container(
             height: 100,
             margin: const EdgeInsets.symmetric(vertical: 8.0),
-            color: Colors.white,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Top Up Page
+class TopUpPage extends StatelessWidget {
+  const TopUpPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Top Up'),
+        backgroundColor: WatWalletDesignSystem.primaryColor,
+      ),
+      body: const Center(
+        child: Text('Top Up Page Content'),
+      ),
+    );
+  }
+}
+
+// Card Details Page
+class CardDetailsPage extends StatelessWidget {
+  const CardDetailsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Card Details'),
+        backgroundColor: WatWalletDesignSystem.primaryColor,
+      ),
+      body: const Center(
+        child: Text('Card Details Page Content'),
+      ),
+    );
+  }
+}
+
+// Freeze Modal Sheet
+class FreezeModalSheet extends StatelessWidget {
+  const FreezeModalSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'Freeze Card',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text('Freeze your card to prevent any unauthorized usage.'),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: WatWalletDesignSystem.primaryColor,
+            ),
+            child: const Text('Confirm'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Terminate Card Modal Sheet
+class TerminateCardModalSheet extends StatelessWidget {
+  const TerminateCardModalSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Terminate Card',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Do you wish to terminate your card? Note: This process cannot be undone.',
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 24),
+          GestureDetector(
+            onTap: () {
+              // Handle Terminate Card
+            },
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Center(
+                child: Text(
+                  'Terminate Card',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: WatWalletDesignSystem.primaryColor),
+              ),
+              child: const Center(
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: WatWalletDesignSystem.primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
