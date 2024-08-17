@@ -5,7 +5,6 @@ For the Apk Please find it in:
 ```
 releases > app-release.apk
 ```
-```
 
 
 
