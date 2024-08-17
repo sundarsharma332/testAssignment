@@ -6,6 +6,12 @@
 .pub-cache/
 .pub/
 build/
+android/
+linux/
+macos/
+web/
+.metadata
+
 # Uncomment this line if you are using Flutter 1.x:
 # flutter_export_environment.sh
 
