@@ -3,6 +3,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:test_assignment/utils/deisgn_system.dart';
 
+import 'card_details.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -13,7 +15,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   int _activeTabIndex = 0;
-  bool _isTabLoading = false;
+  bool _isTabLoading = true;
 
   final List<Map<String, dynamic>> _carouselData = [
     {
@@ -40,9 +42,6 @@ class HomePageState extends State<HomePage> {
   }
 
   void _loadInitialTabContent() {
-    setState(() {
-      _isTabLoading = true;
-    });
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         _isTabLoading = false;
@@ -95,6 +94,9 @@ class HomePageState extends State<HomePage> {
   void _openTerminateCardModalSheet() {
     showModalBottomSheet(
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (BuildContext context) {
         return const TerminateCardModalSheet();
       },
@@ -406,7 +408,7 @@ class HomePageState extends State<HomePage> {
       String imagePath, Color badgeColor) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: Container(
+      child: SizedBox(
         height: 72,
         child: Row(
           children: [
@@ -480,44 +482,73 @@ class HomePageState extends State<HomePage> {
               color: Colors.black,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Row(
+            child: const Row(
               children: [
                 Icon(Icons.apple, color: Colors.white),
-                const Spacer(),
-                const Text(
+                Spacer(),
+                Text(
                   'Add to Apple Wallet',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Spacer(),
+                Spacer(),
               ],
             ),
           ),
         ),
-        _buildManageCardItem('Spending Currencies'),
-        _buildManageCardItem('Spending Limit'),
-        _buildManageCardItem('Change PIN'),
-        _buildManageCardItem('Order History'),
-        GestureDetector(
-          onTap: _openTerminateCardModalSheet,
-          child: _buildManageCardItem('Terminate Card'),
-        ),
+        _buildManageCardList(),
       ],
     );
   }
 
-  Widget _buildManageCardItem(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
+  Widget _buildManageCardList() {
+    final List<Map<String, dynamic>> cardItems = [
+      {'title': 'Spending Currencies', 'color': Colors.black},
+      {'title': 'Spending Limit', 'color': Colors.black},
+      {'title': 'Change PIN', 'color': Colors.black},
+      {'title': 'Order History', 'color': Colors.black},
+      {'title': 'Terminate Card', 'color': Colors.red},
+    ];
+
+    return Column(
+      children: cardItems.map((item) {
+        bool isLast = item == cardItems.last;
+        return GestureDetector(
+          onTap: item['title'] == 'Terminate Card'
+              ? _openTerminateCardModalSheet
+              : null,
+          child: _buildManageCardItem(item['title'], item['color'], !isLast),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildManageCardItem(String title, Color color, bool addBorder) {
+    return Container(
+      height: 64,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        border: addBorder
+            ? Border(
+                bottom: BorderSide(color: Colors.grey.shade300, width: 1),
+              )
+            : null,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+          Icon(Icons.arrow_forward_ios, size: 16, color: color),
+        ],
       ),
     );
   }
@@ -563,24 +594,6 @@ class TopUpPage extends StatelessWidget {
       ),
       body: const Center(
         child: Text('Top Up Page Content'),
-      ),
-    );
-  }
-}
-
-// Card Details Page
-class CardDetailsPage extends StatelessWidget {
-  const CardDetailsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Card Details'),
-        backgroundColor: WatWalletDesignSystem.primaryColor,
-      ),
-      body: const Center(
-        child: Text('Card Details Page Content'),
       ),
     );
   }
@@ -632,88 +645,104 @@ class TerminateCardModalSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: const BoxDecoration(
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Terminate Card',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'Do you wish to terminate your card? Note: This process cannot be undone.',
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 24),
-          GestureDetector(
-            onTap: () {
-              // Handle Terminate Card
-            },
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Center(
-                child: Text(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
                   'Terminate Card',
                   style: TextStyle(
-                    color: Colors.white,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 16),
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: WatWalletDesignSystem.primaryColor),
-              ),
-              child: const Center(
-                child: Text(
-                  'Cancel',
+            const SizedBox(height: 16),
+            const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Do you wish to terminate your card?',
                   style: TextStyle(
-                    color: WatWalletDesignSystem.primaryColor,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Note: This process cannot be undone.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF5F5F6F), // The gray color for the note
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            GestureDetector(
+              onTap: () {
+                // Handle Terminate Card
+              },
+              child: Container(
+                width: double.infinity,
+                height: 56,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEF4444),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Center(
+                  child: Text(
+                    'Terminate Card',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                width: double.infinity,
+                height: 56,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: WatWalletDesignSystem.primaryColor),
+                ),
+                child: const Center(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: WatWalletDesignSystem.primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

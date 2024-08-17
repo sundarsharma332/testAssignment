@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:test_assignment/utils/deisgn_system.dart'; // Ensure this path is correct
+import '../utils/deisgn_system.dart';
 import 'home_page.dart';
 import 'settings.dart';
 import 'transaction_page.dart';
@@ -63,6 +63,7 @@ class _DashboardState extends State<Dashboard> {
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed, // Prevents the shift effect
         elevation: 10,
         currentIndex: _currentIndex,
         selectedItemColor: WatWalletDesignSystem.primaryColor,
@@ -91,6 +92,9 @@ class _DashboardState extends State<Dashboard> {
             label: 'Settings',
           ),
         ],
+        selectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

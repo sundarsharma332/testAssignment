@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_assignment/Pages/dashboard.dart';
+import 'package:test_assignment/Pages/splash_screen.dart';
 // import 'Pages/splash_screen.dart';
 
 void main() {
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false,
       ),
-      home: const Dashboard(),
+      home: const SplashScreen(),
     );
   }
 }
