@@ -64,6 +64,7 @@ flutter:
 
   assets:
     - assets/card/
+    - assets/card_options/
     - assets/icons/
     - assets/logo/
     - assets/onboarding/

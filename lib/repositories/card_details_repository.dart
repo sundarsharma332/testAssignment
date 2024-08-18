@@ -16,24 +16,14 @@ class CardRepository {
         buttonText: 'Order Physical Card',
       ),
       CardDetailsModel(
-        imagePath: 'assets/card/card2.png',
-        features: [
-          CardFeature(icon: Icons.money, text: 'Global Spend with no fees'),
-          CardFeature(
-              icon: Icons.card_travel, text: 'Travel insurance included'),
-          CardFeature(icon: Icons.upgrade, text: 'Upgrade to premium features'),
-        ],
-        buttonText: 'Upgrade for \$10.99',
-      ),
-      CardDetailsModel(
-        imagePath: 'assets/card/card3.png',
+        imagePath: 'assets/card_options/card_option_two.png',
         features: [
           CardFeature(icon: Icons.savings, text: 'Earn cashback on purchases'),
           CardFeature(
               icon: Icons.local_offer, text: 'Exclusive offers and rewards'),
           CardFeature(icon: Icons.lock, text: 'Advanced card security'),
         ],
-        buttonText: 'Order Physical Card',
+        buttonText: 'Upgrade for \$ 10.99',
       ),
     ];
   }

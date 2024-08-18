@@ -54,6 +54,9 @@ class CardDetailsPageState extends State<CardDetailsPage> {
           _buildIndicator(),
           CardFeatureList(card: _cards[_currentIndex]),
           _buildTermsAndConditionsText(),
+          const SizedBox(
+            height: 12,
+          ),
           _buildActionButton(),
           const SizedBox(height: 16),
         ],
