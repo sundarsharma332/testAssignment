@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../data/onboarding_data.dart';
 import '../utils/deisgn_system.dart';
-import '../widgets/onboarding_content_widgets.dart';
+import '../components/onboarding_content_widgets.dart';
 import 'dashboard.dart';
 
 class OnboardingPage extends StatefulWidget {
